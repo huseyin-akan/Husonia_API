@@ -1,8 +1,11 @@
 const express = require('express');
 const path = require('path');
-const {products} = require('./data');
+
 const logger = require('./logger');
 const authorize = require('./authorize');
+
+const products = require('./routes/products');
+const auth = require('./routes/auth');
 
 const app = express();
 
@@ -13,6 +16,14 @@ app.use([logger, authorize]);
 
 //Serve static files in this folder path.
 app.use(express.static('./public'))
+
+//Parse FormData if using classic html form posting.
+app.use(express.urlencoded({extended:false}))
+//Parse JSON data if using JS posting
+app.use(express.json() );
+
+app.use('/api/v1/proudcts', products);
+app.use('/api/v1/auth', auth);
 
 app.listen(5007, () => {
 	console.log("Server is listening on port 5007...");
@@ -29,39 +40,6 @@ app.get('/', logger, (req, res) => {
 app.get('/about', (req, res) => {
 	res.status(200).send('About Page');
 });
-
-//returning JSON
-app.get('/api/products', [logger, authorize], (req, res) => {
-	res.json(products);
-})
-
-//mapping return data
-app.get('/api/products2', (req, res) => {
-	const newProducts = products.map( (product) => {
-		const {id, name, image} = product;
-		return {id, name, image};
-	})
-	res.json(newProducts);
-})
-
-//Route Parameter
-app.get('/api/getproductbyid/:productId', (req, res) => {
-	const {productId} = req.params;
-	const singleProduct = products.find( product => product.id === Number(productId) );
-
-	if(!singleProduct) return res.status(404).send('Product does not exist');
-
-	res.json(singleProduct);
-})
-
-//Query Parameter
-app.get('/api/v1/getproductbyid', (req, res) => {
-	const {productId} = req.query;
-	const singleProduct = products.find( product => product.id === Number(productId) );
-
-	if(!singleProduct) return res.status(404).send('Product does not exist');
-	res.json(singleProduct);
-})
 
 //Handles all HTTP verbs.
 //If request path is not registered:
