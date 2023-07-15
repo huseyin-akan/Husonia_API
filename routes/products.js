@@ -1,4 +1,7 @@
 const express = require('express');
+const logger = require('../logger');
+const authorize = require('../authorize');
+
 const router = express.Router();
 
 const {getPeople, getPeopleV2, getProductById, getProductById2} = require('../controllers/products-controller');
@@ -10,7 +13,7 @@ router.get('/', [logger, authorize], getPeople)
 router.get('/v2', getPeopleV2)
 
 //Route Parameter
-router.get('getproductbyid/:productId', getProductById)
+router.get('/getproductbyid/:productId', getProductById)
 
 //Query Parameter
 router.get('/getproductbyid', getProductById2)

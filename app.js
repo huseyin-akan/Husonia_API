@@ -22,7 +22,7 @@ app.use(express.urlencoded({extended:false}))
 //Parse JSON data if using JS posting
 app.use(express.json() );
 
-app.use('/api/v1/proudcts', products);
+app.use('/api/v1/products', products);
 app.use('/api/v1/auth', auth);
 
 app.listen(5007, () => {
