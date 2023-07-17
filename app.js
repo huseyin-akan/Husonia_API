@@ -1,17 +1,22 @@
+require('./db/connect');	//Sadece connect JS dosyasını çağırdık böylece çalıştırmış olduk. İçeriği lazım değil.
+const {log} = require('./utilities/husoLogger');
 const express = require('express');
-const path = require('path');
+const connectDB = require('./db/connect');
+require('dotenv').config();	//.env dosyasından değişken okuyoruz. Bu dosyayı github'a pushlamıyoruz. process.env.MONGO_URI olarak erişebiliyoruz. process global bir değişken.
 
-const logger = require('./logger');
-const authorize = require('./authorize');
-
-const products = require('./routes/products');
-const auth = require('./routes/auth');
+//Middlewares
+const logger = require('./middlewares/logger');
+const authorize = require('./middlewares/authorize');
+//Routes
+const products = require('./routes/product-routes');
+const auth = require('./routes/auth-routes');
+const pages = require('./routes/page-routes');
 
 const app = express();
+const port = process.env.PORT;
 
 //Uygulamamıza logger middleware'ı ekledik ve tüm route'larda çalışacak.
 app.use([logger, authorize]);
-
 //app.use('/api', logger); //logger middleware will be applied to only routes starting with api.
 
 //Serve static files in this folder path.
@@ -22,24 +27,10 @@ app.use(express.urlencoded({extended:false}))
 //Parse JSON data if using JS posting
 app.use(express.json() );
 
+//Routes Middleware:
 app.use('/api/v1/products', products);
 app.use('/api/v1/auth', auth);
-
-app.listen(5007, () => {
-	console.log("Server is listening on port 5007...");
-});
-
-//sending an html file
-//we added logger middleware before the callback function.
-//this will work twice because we also have a global logger middleware
-app.get('/', logger, (req, res) => {
-	res.status(200).sendFile(path.resolve(__dirname, './navbar/index.html'));
-});
-
-//returning some text
-app.get('/about', (req, res) => {
-	res.status(200).send('About Page');
-});
+app.use('', pages)
 
 //Handles all HTTP verbs.
 //If request path is not registered:
@@ -51,4 +42,13 @@ app.all('*', (req, res) => {
 	`);
 });
 
+const start = async () => {
+	try{
+		await connectDB(process.env.MONGO_URI);
+		log('Connected to DB...', 'yellow', false)
+		app.listen(port, () => { log(`Server is listening on port ${port} ...`); });
+	}
+	catch(error){ log(error, 'red'); }
+}
 
+start();
