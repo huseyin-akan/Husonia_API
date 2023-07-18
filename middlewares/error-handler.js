@@ -1,7 +1,12 @@
+const {CustomAPIError} = require('../models/errors/custom-error')
+
 const errorHandler = (err, req, res, next) => {
-    return res.status(500).json({err : err});
+    
+    //Bizim fırlattığımız hata ise, fırlattığımız hatayı json olarak dönüyoruz.
+    if(err instanceof CustomAPIError) return res.status(err.statusCode).json({msg: err.message});
+
+    //Unexpected errors.
+    return res.status(500).json({msg : 'Unexpected error occured. Please try again later.'});
 }
 
 module.exports = errorHandler;
-
-//TODO-HUS 2.57.20'de Custom error oluşturmada kaldık.

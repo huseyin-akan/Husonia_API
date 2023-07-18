@@ -1,6 +1,7 @@
 const { products } = require("../data");
 const Product = require("../models/Product");
-const asyncWrapper = require('../middlewares/async')
+const asyncWrapper = require("../middlewares/async");
+const {createCustomError} = require("../models/errors/custom-error");
 
 //returning JSON
 const getPeople = (req, res) => {
@@ -16,17 +17,15 @@ const getPeopleV2 = (req, res) => {
   res.json(newProducts);
 };
 
-const getProductById = asyncWrapper(
-        async (req, res) => {
-                const { productId } = req.params;
-                const singleProduct = await Product.findOne({ _id: productId });
-              
-                if (!singleProduct) return res.status(404).send("Product does not exist");
-              
-                res.status(200).json(singleProduct);
-        }
-);
- 
+const getProductById = asyncWrapper(async (req, res, next) => {
+  const { productId } = req.params;
+  const singleProduct = await Product.findOne({ _id: productId });
+
+  if (!singleProduct)
+    return next(createCustomError("Product does not exist", 404));
+
+  res.status(200).json(singleProduct);
+});
 
 const getProductById2 = async (req, res) => {
   const { productId } = req.query;
@@ -54,7 +53,7 @@ const updateProduct = async (req, res) => {
     const updatedProduct = await Product.findOneAndUpdate(
       { _id: product.id },
       product,
-      {new: true, runValidators : true} //Bunu göndermezsen sana eski productı döner ve, validatorları çalıştırmaz. 
+      { new: true, runValidators: true } //Bunu göndermezsen sana eski productı döner ve, validatorları çalıştırmaz.
     );
     if (!updatedProduct)
       return res
@@ -68,23 +67,23 @@ const updateProduct = async (req, res) => {
 };
 
 const replaceProduct = async (req, res) => {
-        try {
-          const product = req.body;
-          const updatedProduct = await Product.findOneAndUpdate(
-            { _id: product.id },
-            product,
-            {new: true, overwrite :true} //replaces the old product with new data and returns the new product
-          );
-          if (!updatedProduct)
-            return res
-              .status(404)
-              .json("No product found for updating with id: " + product.id);
-          res.status(200).json(updatedProduct);
-        } catch (err) {
-          console.log(err);
-          res.status(500).json(err);
-        }
-      };
+  try {
+    const product = req.body;
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id: product.id },
+      product,
+      { new: true, overwrite: true } //replaces the old product with new data and returns the new product
+    );
+    if (!updatedProduct)
+      return res
+        .status(404)
+        .json("No product found for updating with id: " + product.id);
+    res.status(200).json(updatedProduct);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
 
 const deleteProduct = async (req, res) => {
   try {
@@ -140,5 +139,5 @@ module.exports = [
   createProduct,
   createProducts,
   getAllProducts,
-  replaceProduct
+  replaceProduct,
 ];

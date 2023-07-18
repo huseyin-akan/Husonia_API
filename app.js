@@ -3,6 +3,7 @@ const express = require('express');
 const connectDB = require('./db/connect');
 require('dotenv').config();	//.env dosyasından değişken okuyoruz. Bu dosyayı github'a pushlamıyoruz. process.env.MONGO_URI olarak erişebiliyoruz. process global bir değişken.
 
+
 //Middlewares
 const logger = require('./middlewares/logger');
 const authorize = require('./middlewares/authorize');
@@ -13,8 +14,10 @@ const products = require('./routes/product-routes');
 const auth = require('./routes/auth-routes');
 const pages = require('./routes/page-routes');
 
+//TODO-HUS 03.07.40'ta kaldık.
+
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 5007; //if not set use 5007.
 
 //Uygulamamıza logger middleware'ı ekledik ve tüm route'larda çalışacak.
 app.use([logger, authorize]);
