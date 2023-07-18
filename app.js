@@ -1,4 +1,3 @@
-require('./db/connect');	//Sadece connect JS dosyasını çağırdık böylece çalıştırmış olduk. İçeriği lazım değil.
 const {log} = require('./utilities/husoLogger');
 const express = require('express');
 const connectDB = require('./db/connect');
@@ -7,6 +6,8 @@ require('dotenv').config();	//.env dosyasından değişken okuyoruz. Bu dosyayı
 //Middlewares
 const logger = require('./middlewares/logger');
 const authorize = require('./middlewares/authorize');
+const notFound = require('./middlewares/not-found');
+const errorHandler = require('./middlewares/error-handler');
 //Routes
 const products = require('./routes/product-routes');
 const auth = require('./routes/auth-routes');
@@ -32,20 +33,14 @@ app.use('/api/v1/products', products);
 app.use('/api/v1/auth', auth);
 app.use('', pages)
 
-//Handles all HTTP verbs.
-//If request path is not registered:
-app.all('*', (req, res) => {
-	res.status(404).send(`
-	<h1> Routing Error </h1>
-	<p> This page doesnt exist. Please go back home and navigate from there!!! </p>
-	<a href="/"> Go Home</a>
-	`);
-});
+//Handles all HTTP verbs if request path is not registered:
+app.all('*', notFound);
+app.use(errorHandler);
 
 const start = async () => {
 	try{
 		await connectDB(process.env.MONGO_URI);
-		log('Connected to DB...', 'yellow', false)
+		log('Connected to DB...', 'yellow', false);
 		app.listen(port, () => { log(`Server is listening on port ${port} ...`); });
 	}
 	catch(error){ log(error, 'red'); }

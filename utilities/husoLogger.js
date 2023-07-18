@@ -6,7 +6,7 @@ const log = (value, color, reset) => {
     if(color === 'yellow') return console.log(`\x1b[33m${value}${reset ? '\x1b[0m' :''}`)
     if(color === 'red') return console.log(`\x1b[31m${value}${reset ? '\x1b[0m' :''}`)
     
-    console.log(`${value}${value}${reset ? '\x1b[0m' :''}`);
+    console.log(`${value}${reset ? '\x1b[0m' :''}`);
 }
 
 module.exports = {log};
