@@ -3,6 +3,8 @@ const Product = require("../models/Product");
 const asyncWrapper = require("../middlewares/async");
 const {createCustomError} = require("../models/errors/custom-error");
 
+const [searchProducts] = require('../services/product-service');
+
 //returning JSON
 const getPeople = (req, res) => {
   res.json(products);
@@ -30,6 +32,8 @@ const getProductById = asyncWrapper(async (req, res, next) => {
 const getProductById2 = async (req, res) => {
   const { productId } = req.query;
   const singleProduct = await Product.findOne({ _id: productId });
+  if(2 > 1)
+  throw new Error('Testing express-aysnc-errors package') //we dont need asyncWrapper here. Express will take care of these errors.
 
   if (!singleProduct) return res.status(404).send("Product does not exist");
   res.status(200).json(singleProduct);
@@ -122,10 +126,15 @@ const getAllProducts = async (req, res) => {
     const products = await Product.find({});
     res.status(200).json(products);
   } catch (err) {
-    console;
+    console.log(err);
     res.status(400).json(err);
   }
 };
+
+const searchProducts = async (req, res) => {
+  const products = searchProducts(req);
+  res.json(products); //it already sends 200 so i dont write .status(200);
+}
 
 module.exports = [
   getPeople,
@@ -140,4 +149,5 @@ module.exports = [
   createProducts,
   getAllProducts,
   replaceProduct,
+  searchProducts,
 ];

@@ -9,3 +9,5 @@ const asyncWrapper = (func) => {
 }
 
 module.exports = asyncWrapper;
+
+//Not: we dont need this wrapper anymore, since express-async-errors package takes care of async errors. But still lets see whats going on under the hood.

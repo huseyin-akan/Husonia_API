@@ -2,7 +2,7 @@ const {log} = require('./utilities/husoLogger');
 const express = require('express');
 const connectDB = require('./db/connect');
 require('dotenv').config();	//.env dosyasından değişken okuyoruz. Bu dosyayı github'a pushlamıyoruz. process.env.MONGO_URI olarak erişebiliyoruz. process global bir değişken.
-
+require('express-async-errors')
 
 //Middlewares
 const logger = require('./middlewares/logger');
@@ -14,7 +14,8 @@ const products = require('./routes/product-routes');
 const auth = require('./routes/auth-routes');
 const pages = require('./routes/page-routes');
 
-//TODO-HUS 03.07.40'ta kaldık.
+//TODO-HUS 04.52.30 Numeric Filters'ta kaldık.
+//TODO-HUS npm install express-async-errors
 
 const app = express();
 const port = process.env.PORT || 5007; //if not set use 5007.
@@ -38,7 +39,7 @@ app.use('', pages)
 
 //Handles all HTTP verbs if request path is not registered:
 app.all('*', notFound);
-app.use(errorHandler);
+app.use(errorHandler); //error handler should be the last middleware.
 
 const start = async () => {
 	try{
