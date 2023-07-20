@@ -3,7 +3,7 @@ const Product = require("../models/Product");
 const asyncWrapper = require("../middlewares/async");
 const {createCustomError} = require("../models/errors/custom-error");
 
-const [searchProducts] = require('../services/product-service');
+const [_searchProducts] = require('../services/product-service');
 
 //returning JSON
 const getPeople = (req, res) => {
@@ -132,7 +132,7 @@ const getAllProducts = async (req, res) => {
 };
 
 const searchProducts = async (req, res) => {
-  const products = searchProducts(req);
+  const products = await _searchProducts(req);
   res.json(products); //it already sends 200 so i dont write .status(200);
 }
 

@@ -15,7 +15,6 @@ const auth = require('./routes/auth-routes');
 const pages = require('./routes/page-routes');
 
 //TODO-HUS 04.52.30 Numeric Filters'ta kaldık.
-//TODO-HUS npm install express-async-errors
 
 const app = express();
 const port = process.env.PORT || 5007; //if not set use 5007.
