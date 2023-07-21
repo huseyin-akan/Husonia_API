@@ -1,22 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const [login, register] = require('../controllers/auth-controller');
 
-router.post('/login', (req, res) => {
-	const {name} = req.body;
-	if(name){
-		return res.status(200).send(`Welcome ${name}`);
-	}
 
-	res.status(401).send('Please provide credentials.')
-})
-
-router.post('/login2', (req, res) => {
-	const {name} = req.body;
-	if(name){
-		return res.status(200).json({success: true, message: `Welcome ${name}`});
-	}
-
-	res.status(401).json({success : false, message: 'Please provide a name value'})
-})
+router.route('/login').post(login);
+router.post('/register', register);
 
 module.exports = router;

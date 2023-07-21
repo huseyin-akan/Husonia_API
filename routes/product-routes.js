@@ -4,17 +4,14 @@ const authorize = require('../middlewares/authorize');
 
 const router = express.Router();
 
-const [getPeople, getPeopleV2, getProductById, getProductById2, saveProducts, updateProducts, updateProduct, deleteProduct, createProduct, createProducts,
+const [getPeopleV2, getProductById, getProductById2, saveProducts, updateProducts, updateProduct, deleteProduct, createProduct, createProducts,
     getAllProducts, replaceProduct, searchProducts]= require('../controllers/products-controller');
-
-//we add logger and authorize middleware here.
-router.get('/', [logger, authorize], getPeople)
 
 //we add logger middleware here.
 router.get('/v2', logger, getPeopleV2)
 
-//Route Parameter
-router.get('/getproductbyid/:productId', getProductById)
+//Route Parameter, //we add logger and authorize middleware here.
+router.get('/getproductbyid/:productId', [logger, authorize], getProductById)
 
 //Query Parameter
 router.get('/getproductbyid', getProductById2)

@@ -5,12 +5,7 @@ const {createCustomError} = require("../models/errors/custom-error");
 
 const [_searchProducts] = require('../services/product-service');
 
-//returning JSON
-const getPeople = (req, res) => {
-  res.json(products);
-};
-
-//mapping return data
+//mapping return data //TODO-HUS people'dan kurtul bu mapleme taktiğini bi product metoduna yaz.
 const getPeopleV2 = (req, res) => {
   const newProducts = products.map((product) => {
     const { id, name, image } = product;
@@ -137,7 +132,6 @@ const searchProducts = async (req, res) => {
 }
 
 module.exports = [
-  getPeople,
   getPeopleV2,
   getProductById,
   getProductById2,
