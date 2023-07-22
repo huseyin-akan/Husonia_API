@@ -28,14 +28,17 @@ const ProductSchema = new mongoose.Schema({
         default: false //we can give default values.
     },
     price : Number,
-    createdDate : {
-        type: Date,
-        default : Date.now()
+    createdBy : {
+        type: mongoose.Types.ObjectId,
+        ref: 'User', //We are saying which model we are referencing.
+        required: true
     },
-    updatedDate : {
-        type: Date,
-        default : Date.now()
+    updatedBy : {
+        type: mongoose.Types.ObjectId
     }
+},
+{
+    timestamps: true //this manages createdAt and updatedAt fields if true
 });
 
 module.exports = mongoose.model('Product', ProductSchema);

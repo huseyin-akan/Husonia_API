@@ -20,7 +20,7 @@ router.get('/getproductbyid', getProductById2)
 router.route('/dmlproducts').post(saveProducts).put(updateProducts);
 router.route('/product/:productId').get(() => {console.log('I worked 222')}, getProductById).delete(deleteProduct).patch(updateProduct); //Same stuff with above.
 
-router.post('/saveproduct', createProduct);
+router.post('/createproduct', createProduct);
 router.post('/saveproducts', createProducts);
 router.patch('/updateproduct', updateProduct); //Patch method should patch only the sent fields.
 router.put('/updateproduct', replaceProduct); //Put method should replace the product. Only sent fields will remain and others will be deleted.

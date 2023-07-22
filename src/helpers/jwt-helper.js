@@ -2,11 +2,11 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const {createCustomError} = require('../errors/custom-error');
 
-const createToken = () => {
-    let id = 123;
-    let username = "husokanus";
+const createToken = (user) => {
+    let id = user._id;
+    let username = user.username;
 
-    const token = jwt.sign({id, username}, process.env.JWT_SECRET, {expiresIn: '30d'});
+    const token = jwt.sign({id, username}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
     return token;
 }
 

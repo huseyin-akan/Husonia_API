@@ -14,7 +14,13 @@ const products = require('./src/routes/product-routes');
 const auth = require('./src/routes/auth-routes');
 const pages = require('./src/routes/page-routes');
 
-//TODO-HUS 06.19.41  http-status-codes kütüphanesinde kaldık.
+//Security
+const helmet = require('helmet');
+const cors = require('cors');
+const xss = require('xss-clean');
+const rateLimiter = require('express-rate-limit');
+
+//TODO-HUS 07.38.41  yeni projede kaldık.
 
 const app = express();
 const port = process.env.PORT || 5007; //if not set use 5007.
@@ -28,8 +34,20 @@ app.use(express.static('./public'))
 
 //Parse FormData if using classic html form posting.
 app.use(express.urlencoded({extended:false}))
+
+app.set('trust proxy', 1); //if the project is behind a proxy, add this.
+//Rate Limiting
+app.use(rateLimiter({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+}) );
+
 //Parse JSON data to read from req.body if using JS posting
 app.use(express.json() );
+
+app.use(cors() );
+app.use(helmet() );
+app.use(xss() );
 
 //Routes Middleware:
 app.use('/api/v1/products', authorize, products);

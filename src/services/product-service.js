@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
 const [addNumericFiltersToQueryObj] = require('../helpers/mongo-helper');
+const {NotFoundError} = require('../errors/index');
 
 const numericFilterOptions = ['age', 'price']; 
 
@@ -28,4 +29,34 @@ const searchProducts = async (req) => {
   return products;
 }
 
-module.exports = [searchProducts];
+const getAllProducts = async (req, res) => {
+  const products = await Product.find({});
+  return products;
+}
+
+const getProductById = async (req, res) => {
+  const { productId } = req.query;
+  const singleProduct = await Product.findOne({ _id: productId });
+
+  if (!singleProduct) throw new NotFoundError("Product does not exist");
+
+  return singleProduct;
+};
+
+const createProduct = async (req, res) => {
+  const product2 = req.body;
+  const user2 = req.user;
+  product.createdBy = user._id;
+
+  const createdProduct = await Product.create(product)
+  return createdProduct;  
+}
+
+const deleteProduct = async (req,res) => {
+  const { productId } = req.params;
+  const deletedProduct = await Product.findOneAndDelete({ _id: productId });
+  if (!deletedProduct) throw new NotFoundError("Product does not exist");
+  return deletedProduct; 
+}
+
+module.exports = {searchProducts, getAllProducts, getProductById, createProduct, deleteProduct};

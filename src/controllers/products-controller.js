@@ -1,9 +1,10 @@
-const Product = require("../models/Product");
+const Product = require("../models/Product"); //TODO-HUS bunun burda olmaması lazım. Yavaş yavaş eriticez.
 const asyncWrapper = require("../middlewares/async");
 const {createCustomError} = require("../errors/custom-error");
-const {StatusCodes} = require('http-status-codes')
+const {StatusCodes} = require('http-status-codes');
 
-const [_searchProducts] = require('../services/product-service');
+const {searchProducts: _searchProducts, getAllProducts: _getAllProduct,
+  createProduct: _createProduct, deleteProduct: _deleteProduct} = require('../services/product-service');
 
 //mapping return data //TODO-HUS people'dan kurtul bu mapleme taktiğini bi product metoduna yaz.
 const getPeopleV2 = (req, res) => {
@@ -14,7 +15,12 @@ const getPeopleV2 = (req, res) => {
   res.json(newProducts);
 };
 
-const getProductById = asyncWrapper(async (req, res, next) => {
+const getProductById = async (req, res) => {
+  const product = await _getProductById(req, res);
+  res.status(StatusCodes.OK).json(product);
+};
+
+const getProductById2 = asyncWrapper(async (req, res, next) => {
   const { productId } = req.params;
   const singleProduct = await Product.findOne({ _id: productId });
 
@@ -23,16 +29,6 @@ const getProductById = asyncWrapper(async (req, res, next) => {
 
   res.status(StatusCodes.OK).json(singleProduct);
 });
-
-const getProductById2 = async (req, res) => {
-  const { productId } = req.query;
-  const singleProduct = await Product.findOne({ _id: productId });
-  if(2 > 1)
-  throw new Error('Testing express-aysnc-errors package') //we dont need asyncWrapper here. Express will take care of these errors.
-
-  if (!singleProduct) return res.status(404).send("Product does not exist");
-  res.status(StatusCodes.OK).json(singleProduct);
-};
 
 const saveProducts = (req, res) => {
   const { product } = req.body;
@@ -85,45 +81,24 @@ const replaceProduct = async (req, res) => {
 };
 
 const deleteProduct = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const product = await Product.findOneAndDelete({ _id: productId });
-    if (!product) return res.status(StatusCodes.NOT_FOUND).json("Item is not found");
-    res.status(StatusCodes.OK).json(product);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  await _deleteProduct(req, res);
+  res.status(StatusCodes.OK).send();
 };
 
 const createProduct = async (req, res) => {
-  const product = req.body;
-
-  await Product.create(product)
-    .then((result) => {
-      console.log(result);
-      res.status(StatusCodes.CREATED).json(result);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(StatusCodes.BAD_REQUEST).json(err.message);
-    });
+  const createdProduct = await _createProduct(req, res);
+  res.status(StatusCodes.CREATED).json(createdProduct);
 };
 
 const createProducts = async (req, res) => {
   const products = req.body;
   var result = await Product.insertMany(products);
-  console.log(result);
   res.status(StatusCodes.UNAUTHORIZED).json(result);
 };
 
 const getAllProducts = async (req, res) => {
-  try {
-    const products = await Product.find({});
-    res.status(200).json(products);
-  } catch (err) {
-    console.log(err);
-    res.status(400).json(err);
-  }
+  const products = await _getAllProduct();
+  res.status(StatusCodes.OK).json(products);
 };
 
 const searchProducts = async (req, res) => {
