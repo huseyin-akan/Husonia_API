@@ -2,6 +2,7 @@ const { products } = require("../data");
 const Product = require("../models/Product");
 const asyncWrapper = require("../middlewares/async");
 const {createCustomError} = require("../models/errors/custom-error");
+const {StatusCodes} = require('http-status-codes')
 
 const [_searchProducts] = require('../services/product-service');
 
@@ -21,7 +22,7 @@ const getProductById = asyncWrapper(async (req, res, next) => {
   if (!singleProduct)
     return next(createCustomError("Product does not exist", 404));
 
-  res.status(200).json(singleProduct);
+  res.status(StatusCodes.OK).json(singleProduct);
 });
 
 const getProductById2 = async (req, res) => {
@@ -31,7 +32,7 @@ const getProductById2 = async (req, res) => {
   throw new Error('Testing express-aysnc-errors package') //we dont need asyncWrapper here. Express will take care of these errors.
 
   if (!singleProduct) return res.status(404).send("Product does not exist");
-  res.status(200).json(singleProduct);
+  res.status(StatusCodes.OK).json(singleProduct);
 };
 
 const saveProducts = (req, res) => {
@@ -58,10 +59,10 @@ const updateProduct = async (req, res) => {
       return res
         .status(404)
         .json("No product found for updating with id: " + product.id);
-    res.status(200).json(updatedProduct);
+    res.status(StatusCodes.OK).json(updatedProduct);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
   }
 };
 
@@ -77,10 +78,10 @@ const replaceProduct = async (req, res) => {
       return res
         .status(404)
         .json("No product found for updating with id: " + product.id);
-    res.status(200).json(updatedProduct);
+    res.status(StatusCodes.OK).json(updatedProduct);
   } catch (err) {
     console.log(err);
-    res.status(500).json(err);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(err);
   }
 };
 
@@ -88,8 +89,8 @@ const deleteProduct = async (req, res) => {
   try {
     const { productId } = req.params;
     const product = await Product.findOneAndDelete({ _id: productId });
-    if (!product) return res.status(404).json("Item is not found");
-    res.status(200).json(product);
+    if (!product) return res.status(StatusCodes.NOT_FOUND).json("Item is not found");
+    res.status(StatusCodes.OK).json(product);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -101,11 +102,11 @@ const createProduct = async (req, res) => {
   await Product.create(product)
     .then((result) => {
       console.log(result);
-      res.status(201).json(result);
+      res.status(StatusCodes.CREATED).json(result);
     })
     .catch((err) => {
       console.log(err);
-      res.status(400).json(err.message);
+      res.status(StatusCodes.BAD_REQUEST).json(err.message);
     });
 };
 
@@ -113,7 +114,7 @@ const createProducts = async (req, res) => {
   const products = req.body;
   var result = await Product.insertMany(products);
   console.log(result);
-  res.status(201).json(result);
+  res.status(StatusCodes.UNAUTHORIZED).json(result);
 };
 
 const getAllProducts = async (req, res) => {

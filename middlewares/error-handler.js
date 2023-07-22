@@ -1,4 +1,5 @@
-const {CustomAPIError} = require('../models/errors/custom-error')
+const {CustomAPIError} = require('../models/errors/custom-error');
+const {StatusCodes} = require('http-status-codes')
 
 const errorHandler = (err, req, res, next) => {
     
@@ -8,7 +9,7 @@ const errorHandler = (err, req, res, next) => {
     if(err instanceof CustomAPIError) return res.status(err.statusCode).json({msg: err.message});
 
     //Unexpected errors.
-    return res.status(500).json({msg : 'Unexpected error occured. Please try again later.'});
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({msg : 'Unexpected error occured. Please try again later.'});
 }
 
 module.exports = errorHandler;
