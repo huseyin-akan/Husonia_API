@@ -1,5 +1,5 @@
 const {decodeToken} = require('../helpers/jwt-helper')
-const {createCustomError} = require('../models/errors/custom-error');
+const {createCustomError} = require('../errors/custom-error');
 const {StatusCodes} = require('http-status-codes')
 
 

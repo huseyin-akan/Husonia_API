@@ -1,18 +1,18 @@
 const express = require('express');
-const {log} = require('./utilities/husoLogger');
-const connectDB = require('./db/connect');
+const {log} = require('./src/utilities/husoLogger');
+const connectDB = require('./src/db/connect');
 require('dotenv').config();	//.env dosyasından değişken okuyoruz. Bu dosyayı github'a pushlamıyoruz. process.env.MONGO_URI olarak erişebiliyoruz. process global bir değişken.
 require('express-async-errors') //this packages provides us a structure by which we can throw errors in async methods and our error-handler will catch them. 
 
 //Middlewares
-const logger = require('./middlewares/logger');
-const authorize = require('./middlewares/authorize');
-const notFound = require('./middlewares/not-found');
-const errorHandler = require('./middlewares/error-handler');
+const logger = require('./src/middlewares/logger');
+const authorize = require('./src/middlewares/authorize');
+const notFound = require('./src/middlewares/not-found');
+const errorHandler = require('./src/middlewares/error-handler');
 //Routes
-const products = require('./routes/product-routes');
-const auth = require('./routes/auth-routes');
-const pages = require('./routes/page-routes');
+const products = require('./src/routes/product-routes');
+const auth = require('./src/routes/auth-routes');
+const pages = require('./src/routes/page-routes');
 
 //TODO-HUS 06.19.41  http-status-codes kütüphanesinde kaldık.
 

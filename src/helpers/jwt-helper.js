@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const {createCustomError} = require('../models/errors/custom-error');
+const {createCustomError} = require('../errors/custom-error');
 
 const createToken = () => {
     let id = 123;

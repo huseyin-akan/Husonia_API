@@ -1,7 +1,6 @@
-const { products } = require("../data");
 const Product = require("../models/Product");
 const asyncWrapper = require("../middlewares/async");
-const {createCustomError} = require("../models/errors/custom-error");
+const {createCustomError} = require("../errors/custom-error");
 const {StatusCodes} = require('http-status-codes')
 
 const [_searchProducts] = require('../services/product-service');

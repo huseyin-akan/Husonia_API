@@ -1,4 +1,4 @@
-const {createCustomError} = require('../models/errors/custom-error');
+const {createCustomError} = require('../errors/custom-error');
 const {createToken} = require('../helpers/jwt-helper');
 const {StatusCodes} = require('http-status-codes')
 
